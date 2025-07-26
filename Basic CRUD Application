@@ -1,0 +1,16 @@
+Objective:
+
+Create : Develop a PHP form to add new posts to the database.
+Read : Display a list of posts from the database.
+Update : Implement functionality to edit existing posts.
+Delete : Add functionality to delete posts.
+Create, Read, Update, Delete (CRUD) Operations:
+
+Create registration and login forms.
+Use password hashing for storing passwords securely.
+Implement session management to handle user login states.
+User Authentication:
+
+A functional CRUD application with user authentication.
+Use password hashing for storing passwords securely.
+Implement session management to handle user login states.
