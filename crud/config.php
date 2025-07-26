@@ -1,13 +1,17 @@
 <?php
-$host = "127.0.0.1";  // use 127.0.0.1 instead of localhost
-$port = 3306;         // change if you are using a custom port
-$user = "root";       
-$pass = "";           
-$dbname = "blog";
+// config.php - Database connection
 
-$conn = new mysqli($host, $user, $pass, $dbname, $port);
+$host = 'localhost';
+$dbname = 'blog';
+$username = 'root';
+$password = '';
 
-if ($conn->connect_error) {
-    die("Connection failed: " . $conn->connect_error);
+try {
+    $pdo = new PDO("mysql:host=$host;dbname=$dbname", $username, $password);
+    $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+} catch (PDOException $e) {
+    die("Connection failed: " . $e->getMessage());
 }
+
+session_start(); // Start session globally (so we don't need to repeat in every file)
 ?>

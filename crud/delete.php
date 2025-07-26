@@ -1,17 +1,20 @@
 <?php
-session_start();
-include "config.php";
+include 'config.php';
 
-if (!isset($_SESSION['user'])) {
+// Redirect to login if not logged in
+if (!isset($_SESSION['user_id'])) {
     header("Location: login.php");
     exit;
 }
 
-$id = $_GET['id'];
-$stmt = $conn->prepare("DELETE FROM posts WHERE id = ?");
-$stmt->bind_param("i", $id);
-
-if ($stmt->execute()) {
-    header("Location: index.php");
+// Get the post ID and delete it
+$id = $_GET['id'] ?? null;
+if ($id) {
+    $stmt = $pdo->prepare("DELETE FROM posts WHERE id = ?");
+    $stmt->execute([$id]);
 }
+
+// Redirect back to the posts list
+header("Location: index.php");
+exit;
 ?>

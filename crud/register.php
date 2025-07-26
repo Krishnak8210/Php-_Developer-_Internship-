@@ -1,19 +1,21 @@
 <?php
-session_start();
-include "config.php";
+include 'config.php';
 
-if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    $username = $_POST['username'];
+if (isset($_SESSION['user_id'])) {
+    header("Location: index.php");
+    exit;
+}
+
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    $username = trim($_POST['username']);
     $password = password_hash($_POST['password'], PASSWORD_DEFAULT);
 
-    $stmt = $conn->prepare("INSERT INTO users (username, password) VALUES (?, ?)");
-    $stmt->bind_param("ss", $username, $password);
-
-    if ($stmt->execute()) {
-        header("Location: login.php");
-        exit;
-    } else {
-        $error = "Username already exists!";
+    try {
+        $stmt = $pdo->prepare("INSERT INTO users (username, password) VALUES (?, ?)");
+        $stmt->execute([$username, $password]);
+        $message = "<div class='alert alert-success'>Registered successfully. <a href='login.php'>Login here</a></div>";
+    } catch (PDOException $e) {
+        $message = "<div class='alert alert-danger'>Username already exists.</div>";
     }
 }
 ?>
@@ -28,21 +30,21 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 <div class="container mt-5">
     <div class="row justify-content-center">
         <div class="col-md-4">
-            <div class="card shadow p-4">
-                <h3 class="text-center">Register</h3>
-                <?php if (!empty($error)) echo "<div class='alert alert-danger'>$error</div>"; ?>
-                <form method="POST">
-                    <div class="mb-3">
-                        <label class="form-label">Username</label>
-                        <input type="text" name="username" class="form-control" required>
-                    </div>
-                    <div class="mb-3">
-                        <label class="form-label">Password</label>
-                        <input type="password" name="password" class="form-control" required>
-                    </div>
-                    <button type="submit" class="btn btn-primary w-100">Register</button>
-                    <p class="mt-3 text-center"><a href="login.php">Already have an account? Login</a></p>
-                </form>
+            <div class="card shadow">
+                <div class="card-body">
+                    <h3 class="text-center mb-3">Register</h3>
+                    <?= $message ?? '' ?>
+                    <form method="POST">
+                        <div class="mb-3">
+                            <input type="text" name="username" class="form-control" placeholder="Username" required>
+                        </div>
+                        <div class="mb-3">
+                            <input type="password" name="password" class="form-control" placeholder="Password" required>
+                        </div>
+                        <button type="submit" class="btn btn-primary w-100">Register</button>
+                    </form>
+                    <p class="text-center mt-3">Already have an account? <a href="login.php">Login</a></p>
+                </div>
             </div>
         </div>
     </div>
